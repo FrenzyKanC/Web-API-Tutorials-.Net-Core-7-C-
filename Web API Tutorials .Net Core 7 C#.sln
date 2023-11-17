@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web API Tutorials .Net Core 7 C#", "Web API Tutorials .Net Core 7 C#.csproj", "{FBDF5221-1F15-4DC1-A693-F9A27A967A8A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FBDF5221-1F15-4DC1-A693-F9A27A967A8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBDF5221-1F15-4DC1-A693-F9A27A967A8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBDF5221-1F15-4DC1-A693-F9A27A967A8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBDF5221-1F15-4DC1-A693-F9A27A967A8A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4E0D7977-7393-4290-918B-68A07927F587}
+	EndGlobalSection
+EndGlobal

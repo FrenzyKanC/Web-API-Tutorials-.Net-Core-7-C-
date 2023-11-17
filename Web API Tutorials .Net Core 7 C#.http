@@ -1,0 +1,6 @@
+@Web_API_Tutorials_.Net_Core_7_C__HostAddress = http://localhost:5216
+
+GET {{Web_API_Tutorials_.Net_Core_7_C__HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
