@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Web_API_Tutorials_.Net_Core_7_C_.Models;
 
 // creating controller über rechtsklick controller add controller und dann api empty wählen
 
@@ -15,9 +16,26 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         // http attribut
         [HttpGet]
         // build endpoint
-        public string GetStudentName()
+        // modify to enum
+        // fill in namespace for Students
+        public IEnumerable<Student> GetStudents()
         {
-            return "Student name 1";
+            return new List<Student>{
+                new Student
+                {
+                    Id = 1,
+                    StudentName = "Student 1",
+                    Email = "studentmail1@gmail.com",
+                    Adress = "Hyd, INDIA"
+                },
+                new Student
+                {
+                    Id = 2,
+                    StudentName = "Student 2",
+                    Email = "studentmail2@gmail.com",
+                    Adress = "Banglore, INDIA"
+                }
+            };
         }
     }
 }
