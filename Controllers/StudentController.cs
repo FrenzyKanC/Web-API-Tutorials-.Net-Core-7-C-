@@ -28,11 +28,13 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         // build endpoint
         // modify to enum
         // fill in namespace for Students
-        public IEnumerable<Student> GetStudents()
+        // added ActionResult
+        public ActionResult<IEnumerable<Student>> GetStudents()
         {
             // Datensätze in CollegeRepository gecuttet
             // return auf "CollegeRepository" geändert
-            return CollegeRepository.Students;
+            // added StatusCode: 200 Succes
+            return Ok(CollegeRepository.Students);
         }
 
         // weitere suchfunktion eingefügt, Http Verbs angepasst
@@ -45,27 +47,55 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         // bei einem request zu verhindern
         [Route("{id:int}", Name = "GetStudentById")]
         // geändert auf single record, enum entfernt da einzelne person gesucht wird
-        public Student GetStudentById(int id)
+        public ActionResult<Student> GetStudentById(int id)
         {
+            // added StatusCode: 400 Bad Request Client Error
+            if (id <= 0)
+                return BadRequest();
+
+            // abfang falsche !nicht vorhandener! id
+            var student = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
+            // added StatusCode: 404 Not Found Client Error
+            if (student == null)
+                // added Errormessage
+                return NotFound($"Student with id {id} not found!");
+
             // return type geändert
-            return CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
+            return Ok(student);
         }
 
         // added more Http Actions
         // alternative schreibweise für die route
         // constraint alph = alphabet; wegen http verb nicht string nimmt
         [HttpGet("{name:alph}", Name = "GetStudentByName")]
-        public Student GetStudentByName(string name)
+        public ActionResult<Student> GetStudentByName(string name)
         {
-            return CollegeRepository.Students.Where(n => n.StudentName == name).FirstOrDefault(); ;
+            // added StatusCode: 400 Bad Request Client Error
+            if (string.IsNullOrEmpty(name))
+                return BadRequest();
+            var student = CollegeRepository.Students.Where(n => n.StudentName == name).FirstOrDefault();
+            if (student == null)
+                // added Errormessage
+                return NotFound($"Student with id {name} not found!");
+            return Ok(student);
         }
 
         // restrticted range of id --> siehe list of constraints
         [HttpDelete("{id:min(1):max(100)}", Name = "DeleteStudentById")]
-        public bool DeleteStudent(int id)
+        public ActionResult<bool> DeleteStudent(int id)
         {
-            // "var stu" added
+            // added StatusCode: 400 Bad Request Client Error
+            if (id <= 0)
+                return BadRequest();
+
+            // abfang falsche !nicht vorhandener! id
             var student = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
+            // added StatusCode: 404 Not Found Client Error
+            if (student == null)
+                // added Errormessage
+                return NotFound($"Student with id {id} not found!");
+            // return type geändert
+            return Ok(student);
             // added remove
             CollegeRepository.Students.Remove(student);
             return true;
