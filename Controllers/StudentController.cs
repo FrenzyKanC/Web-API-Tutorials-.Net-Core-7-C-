@@ -41,7 +41,9 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         [HttpGet]
         // dynamic value {id} route
         // , Name = "GetStudentById" ist optional
-        [Route("{id}", Name = "GetStudentById")]
+        // added routing constraint (id:int) um multiple anwahlmöglichkeiten,durch einen datentyp,
+        // bei einem request zu verhindern
+        [Route("{id:int}", Name = "GetStudentById")]
         // geändert auf single record, enum entfernt da einzelne person gesucht wird
         public Student GetStudentById(int id)
         {
@@ -51,16 +53,18 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
 
         // added more Http Actions
         // alternative schreibweise für die route
-        [HttpGet("{name}", Name = "GetStudentByName")]
+        // constraint alph = alphabet; wegen http verb nicht string nimmt
+        [HttpGet("{name:alph}", Name = "GetStudentByName")]
         public Student GetStudentByName(string name)
         {
             return CollegeRepository.Students.Where(n => n.StudentName == name).FirstOrDefault(); ;
         }
 
-        [HttpDelete("{id}", Name = "DeleteStudentById")]
+        // restrticted range of id --> siehe list of constraints
+        [HttpDelete("{id:min(1):max(100)}", Name = "DeleteStudentById")]
         public bool DeleteStudent(int id)
         {
-            //"var stu"
+            // "var stu" added
             var student = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
             // added remove
             CollegeRepository.Students.Remove(student);
