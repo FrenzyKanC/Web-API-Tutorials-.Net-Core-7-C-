@@ -24,6 +24,14 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         // All = template, 
         // Name = "GetAllStudents" = routename
         [Route("All", Name = "GetAllStudents")]
+        // added response documentation
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        // alternative ohne den Typ <Student> bei den div. ActionResult:
+        // [ProducesResponseType(200, Type = typeof(Student)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
 
         // build endpoint
         // modify to enum
@@ -46,6 +54,10 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         // added routing constraint (id:int) um multiple anwahlmöglichkeiten,durch einen datentyp,
         // bei einem request zu verhindern
         [Route("{id:int}", Name = "GetStudentById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         // geändert auf single record, enum entfernt da einzelne person gesucht wird
         public ActionResult<Student> GetStudentById(int id)
         {
@@ -68,6 +80,10 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         // alternative schreibweise für die route
         // constraint alph = alphabet; wegen http verb nicht string nimmt
         [HttpGet("{name:alph}", Name = "GetStudentByName")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<Student> GetStudentByName(string name)
         {
             // added StatusCode: 400 Bad Request Client Error
@@ -82,6 +98,10 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
 
         // restrticted range of id --> siehe list of constraints
         [HttpDelete("{id:min(1):max(100)}", Name = "DeleteStudentById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<bool> DeleteStudent(int id)
         {
             // added StatusCode: 400 Bad Request Client Error
