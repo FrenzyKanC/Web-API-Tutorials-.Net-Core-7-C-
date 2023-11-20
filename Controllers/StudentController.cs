@@ -20,22 +20,19 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         // fill in namespace for Students
         public IEnumerable<Student> GetStudents()
         {
-            return new List<Student>{
-                new Student
-                {
-                    Id = 1,
-                    StudentName = "Student 1",
-                    Email = "studentmail1@gmail.com",
-                    Adress = "Hyd, INDIA"
-                },
-                new Student
-                {
-                    Id = 2,
-                    StudentName = "Student 2",
-                    Email = "studentmail2@gmail.com",
-                    Adress = "Banglore, INDIA"
-                }
-            };
+            // Datensätze in CollegeRepository gecuttet
+            // return auf "CollegeRepository" geändert
+            return CollegeRepository.Students;
+        }
+
+        // weitere suchfunktion eingefügt
+
+        // routing eingeführt
+        [HttpGet("{id:int}")]
+        public Student GetStudentById(int id)
+        {
+            // return type geändert
+            return CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
         }
     }
 }
