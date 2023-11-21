@@ -40,23 +40,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         // obj auf StudentDTO geändert
         public ActionResult<IEnumerable<StudentDTO>> GetStudents()
         {
-            // added DTO var
-
-
-            // foreach beispiel ohne linq syntax
-            /* var students = new List<StudentDTO>();
-             foreach (var item in CollegeRepository.Students)
-             {
-                 StudentDTO obj = new StudentDTO()
-                 {
-                     Id = item.Id,
-                     StudentName = item.StudentName,
-                     Adress = item.Adress,   
-                     Email = item.Email
-                 };
-                 students.Add(obj);
-             }*/
-
+            // added DTO
             // added linq query syntax for non boolean http calls, statt foreach beispiel
             var students = CollegeRepository.Students.Select(s => new StudentDTO()
             {
@@ -135,6 +119,35 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
                 Email = student.Email
             };
             return Ok(studentDTO);
+        }
+
+        // added new method
+        [HttpPost]
+        // pfad: api/student/create
+        [Route("Create")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+        // Daten könne vom Body: [FromBody] oder vom querry: ?
+        public ActionResult<StudentDTO> CreateStudent([FromBody]StudentDTO model)
+        {
+            if(model == null)
+                return BadRequest();
+            int newId = CollegeRepository.Students.LastOrDefault().Id + 1;
+            Student student = new Student
+            {
+                Id = newId,
+                StudentName = model.StudentName,
+                Adress = model.Adress,
+                Email = model.Email
+            };
+            CollegeRepository.Students.Add(student);
+
+            model.Id = student.Id;
+
+            return Ok(student);
         }
 
         // restrticted range of id --> siehe list of constraints
