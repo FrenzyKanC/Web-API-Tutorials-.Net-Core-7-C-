@@ -58,7 +58,6 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
 
         // weitere suchfunktion eingefügt, Http Verbs angepasst
         // () aufgefüllt mit datentyp und name
-
         [HttpGet]
         // dynamic value {id} route
         // , Name = "GetStudentById" ist optional
