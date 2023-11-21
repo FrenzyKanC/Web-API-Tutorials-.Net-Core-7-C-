@@ -37,11 +37,38 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         // modify to enum
         // fill in namespace for Students
         // added ActionResult
-        public ActionResult<IEnumerable<Student>> GetStudents()
+        // obj auf StudentDTO geändert
+        public ActionResult<IEnumerable<StudentDTO>> GetStudents()
         {
+            // added DTO var
+
+
+            // foreach beispiel ohne linq syntax
+            /* var students = new List<StudentDTO>();
+             foreach (var item in CollegeRepository.Students)
+             {
+                 StudentDTO obj = new StudentDTO()
+                 {
+                     Id = item.Id,
+                     StudentName = item.StudentName,
+                     Adress = item.Adress,   
+                     Email = item.Email
+                 };
+                 students.Add(obj);
+             }*/
+
+            // added linq query syntax for non boolean http calls, statt foreach beispiel
+            var students = CollegeRepository.Students.Select(s => new StudentDTO()
+            {
+                Id = s.Id,
+                StudentName = s.StudentName,
+                Adress = s.Adress,
+                Email = s.Email
+            });
+
             // Datensätze in CollegeRepository gecuttet
             // return auf "CollegeRepository" geändert
-            // added StatusCode: 200 Succes
+            // added Ok -> StatusCode: 200 Succes
             return Ok(CollegeRepository.Students);
         }
 
@@ -59,7 +86,8 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         // geändert auf single record, enum entfernt da einzelne person gesucht wird
-        public ActionResult<Student> GetStudentById(int id)
+        // added DTO
+        public ActionResult<StudentDTO> GetStudentById(int id)
         {
             // added StatusCode: 400 Bad Request Client Error
             if (id <= 0)
@@ -71,9 +99,15 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             if (student == null)
                 // added Errormessage
                 return NotFound($"Student with id {id} not found!");
-
+            var studentDTO = new StudentDTO()
+            {
+                Id = student.Id,
+                StudentName = student.StudentName,
+                Adress = student.Adress,
+                Email = student.Email
+            };
             // return type geändert
-            return Ok(student);
+            return Ok(studentDTO);
         }
 
         // added more Http Actions
@@ -84,7 +118,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<Student> GetStudentByName(string name)
+        public ActionResult<StudentDTO> GetStudentByName(string name)
         {
             // added StatusCode: 400 Bad Request Client Error
             if (string.IsNullOrEmpty(name))
@@ -93,7 +127,14 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             if (student == null)
                 // added Errormessage
                 return NotFound($"Student with id {name} not found!");
-            return Ok(student);
+            var studentDTO = new StudentDTO()
+            {
+                Id = student.Id,
+                StudentName = student.StudentName,
+                Adress = student.Adress,
+                Email = student.Email
+            };
+            return Ok(studentDTO);
         }
 
         // restrticted range of id --> siehe list of constraints
