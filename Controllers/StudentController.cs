@@ -124,10 +124,10 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         [HttpPost]
         // pfad: api/student/create
         [Route("Create")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        // changed statsu code to 201
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         // Daten könne vom Body: [FromBody] oder vom querry: ?
         public ActionResult<StudentDTO> CreateStudent([FromBody]StudentDTO model)
@@ -145,8 +145,11 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             CollegeRepository.Students.Add(student);
 
             model.Id = student.Id;
-
-            return Ok(student);
+            // Status 201,
+            // "GetStudentById" = Route
+            // new {id} parameter benötigt object
+            // new created student details = model
+            return CreatedAtRoute("GetStudentById", new {id = model.Id}, model);
         }
 
         // restrticted range of id --> siehe list of constraints
