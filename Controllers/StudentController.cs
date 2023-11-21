@@ -132,6 +132,11 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         // Daten könne vom Body: [FromBody] oder vom querry: ?
         public ActionResult<StudentDTO> CreateStudent([FromBody]StudentDTO model)
         {
+            /* manuelle validation richtig eingegebener user daten außerhalb des StudentDTO Obj
+            ModelState ist Fehlernachricht
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState); */
+
             if(model == null)
                 return BadRequest();
             int newId = CollegeRepository.Students.LastOrDefault().Id + 1;
