@@ -167,6 +167,30 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             return CreatedAtRoute("GetStudentById", new {id = model.Id}, model);
         }
 
+        // added new http call: Put
+        [HttpPut]
+        [Route("Update")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult UpdateStudent([FromBody]StudentDTO model)
+        {
+            if(model == null || model.Id <= 0)
+                BadRequest();
+
+            var existingStudent = CollegeRepository.Students.Where(s => s.Id == model.Id).FirstOrDefault();
+
+            if (existingStudent == null)
+                return NotFound();
+
+            existingStudent.StudentName = model.StudentName;
+            existingStudent.Email = model.Email;
+            existingStudent.Address = model.Address;
+
+            return NoContent();
+        }
+
         // restrticted range of id --> siehe list of constraints
         [HttpDelete("{id:min(1):max(100)}", Name = "DeleteStudentById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
