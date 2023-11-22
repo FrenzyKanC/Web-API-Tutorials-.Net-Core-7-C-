@@ -10,14 +10,14 @@
                     Id = 1,
                     StudentName = "Student 1",
                     Email = "studentmail1@gmail.com",
-                    Adress = "Hyd, INDIA"
+                    Address = "Hyd, INDIA"
                 },
                 new Student
                 {
                     Id = 2,
                     StudentName = "Student 2",
                     Email = "studentmail2@gmail.com",
-                    Adress = "Banglore, INDIA"
+                    Address = "Banglore, INDIA"
                 }
         };
     }

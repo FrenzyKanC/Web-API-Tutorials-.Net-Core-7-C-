@@ -46,7 +46,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             {
                 Id = s.Id,
                 StudentName = s.StudentName,
-                Adress = s.Adress,
+                Address = s.Address,
                 Email = s.Email
             });
 
@@ -86,7 +86,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             {
                 Id = student.Id,
                 StudentName = student.StudentName,
-                Adress = student.Adress,
+                Address = student.Address,
                 Email = student.Email
             };
             // return type geändert
@@ -114,7 +114,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             {
                 Id = student.Id,
                 StudentName = student.StudentName,
-                Adress = student.Adress,
+                Address = student.Address,
                 Email = student.Email
             };
             return Ok(studentDTO);
@@ -144,7 +144,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             {
                 Id = newId,
                 StudentName = model.StudentName,
-                Adress = model.Adress,
+                Address = model.Address,
                 Email = model.Email
             };
             CollegeRepository.Students.Add(student);
