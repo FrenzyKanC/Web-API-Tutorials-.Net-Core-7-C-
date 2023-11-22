@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using Web_API_Tutorials_.Net_Core_7_C_.Models;
 
 // creating controller über rechtsklick controller add controller und dann api empty wählen
@@ -187,6 +188,44 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             existingStudent.StudentName = model.StudentName;
             existingStudent.Email = model.Email;
             existingStudent.Address = model.Address;
+
+            return NoContent();
+        }
+
+        // added new http call: Patch
+        // VORTEIL GEGENÜBER PUT: die payload an den server wird auf das reduziert, was tatsächlich geändert wird
+        [HttpPatch]
+        [Route("{id:int}/UpdatePartial")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult UpdateStudentPartial(int id, [FromBody] JsonPatchDocument<StudentDTO> patchDocument)
+        {
+            if (patchDocument == null || id <= 0)
+                BadRequest();
+
+            var existingStudent = CollegeRepository.Students.Where(s => s.Id == id).FirstOrDefault();
+
+            if (existingStudent == null)
+                return NotFound();
+
+            var studentDTO = new StudentDTO
+            {
+                Id = existingStudent.Id,
+                StudentName = existingStudent.StudentName,
+                Email = existingStudent.Email,
+                Address = existingStudent.Address
+            };
+
+            patchDocument.ApplyTo(studentDTO, ModelState);
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            existingStudent.StudentName = studentDTO.StudentName;
+            existingStudent.Email = studentDTO.Email;
+            existingStudent.Address = studentDTO.Address;
 
             return NoContent();
         }

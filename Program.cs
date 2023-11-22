@@ -7,10 +7,9 @@ namespace Web_API_Tutorials_.Net_Core_7_C_
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
+            // Added new libs
+            builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
