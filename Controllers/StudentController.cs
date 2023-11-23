@@ -242,12 +242,15 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             if (id <= 0)
                 return BadRequest();
 
-            // abfang falsche !nicht vorhandener! id
+            // variable um student auszuwählen
             var student = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
+
+            // abfang falsche !nicht vorhandener! id
             // added StatusCode: 404 Not Found Client Error
-            if (student == null)
+            if (student == null)              
                 // added Errormessage
                 return NotFound($"Student with id {id} not found!");
+
             // return type geändert
             return Ok(student);
             // added remove
