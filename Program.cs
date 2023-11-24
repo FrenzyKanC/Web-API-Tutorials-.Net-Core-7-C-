@@ -1,4 +1,6 @@
 
+using Web_API_Tutorials_.Net_Core_7_C_.MyLogging;
+
 namespace Web_API_Tutorials_.Net_Core_7_C_
 {
     public class Program
@@ -16,6 +18,13 @@ namespace Web_API_Tutorials_.Net_Core_7_C_
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // dependency injection
+            // added: <Constructor Injection, return instance of this>
+            // return type muss angepasst werden: LogToFile, LogToDB...
+            builder.Services.AddScoped<IMyLogger, LogToFile>();
+            builder.Services.AddSingleton<IMyLogger, LogToFile>();
+            builder.Services.AddTransient<IMyLogger, LogToFile>();
 
             var app = builder.Build();
 

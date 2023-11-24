@@ -29,10 +29,11 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
 
     // 1. Strongly coupled/thightly coupled
     private readonly IMyLogger _myLogger;
-        public DemoController()
+
+        // added attributes
+        public DemoController(IMyLogger _myLogger)
         {
-            // das Statement muss für die Class geändert werden: LogToFile, ...
-            _myLogger = new LogToFile();
+            _myLogger = _myLogger;
         }
 
         [HttpGet]
