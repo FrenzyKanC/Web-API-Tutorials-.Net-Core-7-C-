@@ -7,7 +7,10 @@ namespace Web_API_Tutorials_.Net_Core_7_C_
     {
         public static void Main(string[] args)
         {
+            // in-build loggers by default usable: debug, console
             var builder = WebApplication.CreateBuilder(args);
+            // builder.Logging.ClearProviders(); löscht alle loggers
+            // builder.Logging.AddConsole(); added die console zu den loggers
 
             // Added new libs: builder.Services.AddControllers().AddNewtonsoftJson();
 

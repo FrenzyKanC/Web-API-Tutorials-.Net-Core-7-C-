@@ -18,6 +18,14 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
     //enable class as controller class : inherit from
     public class StudentController : ControllerBase
     {
+        // using in-build logger
+        private readonly ILogger<StudentController> _logger;
+
+        public StudentController(ILogger<StudentController> logger)
+        {
+            _logger = logger;
+        }
+
         // http attribut
         // alle verbs haben die route des [controllers]
         // für geändertes routes -> [Route("All")] nach dem Verb adden
@@ -41,6 +49,8 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         // obj auf StudentDTO geändert
         public ActionResult<IEnumerable<StudentDTO>> GetStudents()
         {
+            // added logger
+            _logger.LogInformation("GetStudents method started");
             // added DTO
             // added linq query syntax for non boolean http calls, statt foreach beispiel
             var students = CollegeRepository.Students.Select(s => new StudentDTO()
@@ -75,14 +85,20 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         {
             // added StatusCode: 400 Bad Request Client Error
             if (id <= 0)
+            {
+                _logger.LogWarning("Bad Request");
                 return BadRequest();
-
+            }
             // abfang falsche !nicht vorhandener! id
             var student = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
             // added StatusCode: 404 Not Found Client Error
             if (student == null)
+            {
+                _logger.LogError("Student not found with given Id");
                 // added Errormessage
                 return NotFound($"Student with id {id} not found!");
+            }
+
             var studentDTO = new StudentDTO()
             {
                 Id = student.Id,
