@@ -19,7 +19,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // dependency injection
+            // unterstütze web api dependency injections
             // added: <Constructor Injection, return instance of this>
             // return type muss angepasst werden: LogToFile, LogToDB...
             builder.Services.AddScoped<IMyLogger, LogToFile>();
