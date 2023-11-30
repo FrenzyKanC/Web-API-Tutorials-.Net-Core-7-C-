@@ -16,6 +16,29 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Data
         {
             
         }
-        DbSet<Student> Students { get; set; }   
+        DbSet<Student> Students { get; set; }
+
+        // überschreiben um db aufzufüllen
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Student>().HasData(new List<Student>()
+           {
+            new Student {
+                Id = 1,
+                StudentName = "Venkat",
+                Address = "India",
+                Email = "venkat@gmail.com",
+                DOB = new DateTime(2022, 12, 12)
+            },
+            new Student
+            {
+                Id = 1,
+                StudentName = "Nehanth",
+                Address = "India",
+                Email = "nehanth@gmail.com",
+                DOB = new DateTime(2022, 6, 12)
+            }
+           });
+        }
     }
 }
