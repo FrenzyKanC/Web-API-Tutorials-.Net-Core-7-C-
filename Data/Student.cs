@@ -10,6 +10,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Data
     {
         // Id ist hierdurch der primary key
         [Key]
+        // Identity Caller
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string StudentName { get; set; }

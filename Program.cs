@@ -1,4 +1,6 @@
 
+using Microsoft.EntityFrameworkCore;
+using Web_API_Tutorials_.Net_Core_7_C_.Data;
 using Web_API_Tutorials_.Net_Core_7_C_.MyLogging;
 
 namespace Web_API_Tutorials_.Net_Core_7_C_
@@ -12,8 +14,19 @@ namespace Web_API_Tutorials_.Net_Core_7_C_
             // builder.Logging.ClearProviders(); löscht alle loggers
             // builder.Logging.AddConsole(); added die console zu den loggers
 
-            // Added new libs: builder.Services.AddControllers().AddNewtonsoftJson();
+            // added db server con
+            // import db and update: view -> other windows -> package manager console -> Add-Migration -> InitialDBSetup
+            // danach Update-Database damit sie im ssms ist
+            builder.Services.AddDbContext<CollegeDBContext>(options =>
+            {
+                // hard coded server connection via server string
+                // options.UseSqlServer("Data Source=DESKTOP-TDL170A\\SQLEXPRESS;Initial Catalog=CollegeAppDB;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
 
+                // server connection via appsettings.json avoiding hard coding
+                options.UseSqlServer(builder.Configuration.GetConnectionString("CollegeAppDB"));
+            });
+
+            // Added new libs: builder.Services.AddControllers().AddNewtonsoftJson();
             // added options: non supportet format request error: zb für xml obwohl nur json supportet wird
             // added: .AddXmlDataContractSerializerFormatters() damit xml supportet wird
             builder.Services.AddControllers(options => options.ReturnHttpNotAcceptable = true)
