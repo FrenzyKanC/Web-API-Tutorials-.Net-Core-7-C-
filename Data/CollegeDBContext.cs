@@ -17,13 +17,15 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Data
         {
             
         }
-        DbSet<Student> Students { get; set; }
+
+        // class private gemacht für zugang studencontroller
+        public DbSet<Student> Students { get; set; }
 
         // überschreiben um db aufzufüllen (default data)
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // inhalt aus StudentConfig vermitteln
-            // weitere tables werden hier geadddet
+            // weitere tables werden hier geaddet
             modelBuilder.ApplyConfiguration(new StudentConfig());
         }
     }

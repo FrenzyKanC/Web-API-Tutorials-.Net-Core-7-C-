@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿// fixed errors die durch das löschen der models (in-memory repositories) entstanden sind
+// removed in memory repositories with framework _dbContext
+
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Web_API_Tutorials_.Net_Core_7_C_.Data;
 using Web_API_Tutorials_.Net_Core_7_C_.Models;
 
 // creating controller über rechtsklick controller add controller und dann api empty wählen
@@ -17,13 +22,18 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
 
     //enable class as controller class : inherit from
     public class StudentController : ControllerBase
-    {
+    {     
         // using in-build logger
         private readonly ILogger<StudentController> _logger;
 
-        public StudentController(ILogger<StudentController> logger)
+        // using entity framework
+        private readonly CollegeDBContext _dbContext;
+        
+        // get instance from dependecy injection:
+        public StudentController(ILogger<StudentController> logger, CollegeDBContext dbContext)
         {
             _logger = logger;
+            _dbContext = dbContext;
         }
 
         // http attribut
@@ -53,7 +63,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             _logger.LogInformation("GetStudents method started");
             // added DTO
             // added linq query syntax for non boolean http calls, statt foreach beispiel
-            var students = CollegeRepository.Students.Select(s => new StudentDTO()
+            var students = _dbContext.Students.Select(s => new StudentDTO()
             {
                 Id = s.Id,
                 StudentName = s.StudentName,
@@ -64,7 +74,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             // Datensätze in CollegeRepository gecuttet
             // return auf "CollegeRepository" geändert
             // added Ok -> StatusCode: 200 Succes
-            return Ok(CollegeRepository.Students);
+            return Ok(_dbContext.Students);
         }
 
         // weitere suchfunktion eingefügt, Http Verbs angepasst
@@ -90,7 +100,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
                 return BadRequest();
             }
             // abfang falsche !nicht vorhandener! id
-            var student = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
+            var student = _dbContext.Students.Where(n => n.Id == id).FirstOrDefault();
             // added StatusCode: 404 Not Found Client Error
             if (student == null)
             {
@@ -123,7 +133,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             // added StatusCode: 400 Bad Request Client Error
             if (string.IsNullOrEmpty(name))
                 return BadRequest();
-            var student = CollegeRepository.Students.Where(n => n.StudentName == name).FirstOrDefault();
+            var student = _dbContext.Students.Where(n => n.StudentName == name).FirstOrDefault();
             if (student == null)
                 // added Errormessage
                 return NotFound($"Student with id {name} not found!");
@@ -166,15 +176,17 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
                 return BadRequest(ModelState);
             } */
 
-            int newId = CollegeRepository.Students.LastOrDefault().Id + 1;
+            int newId = _dbContext.Students.LastOrDefault().Id + 1;
             Student student = new Student
             {
-                Id = newId,
+                // id entfernt
                 StudentName = model.StudentName,
                 Address = model.Address,
                 Email = model.Email
             };
-            CollegeRepository.Students.Add(student);
+            _dbContext.Students.Add(student);
+            // save changes für externe db
+            _dbContext.SaveChanges();
 
             model.Id = student.Id;
             // Status 201,
@@ -196,7 +208,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             if(model == null || model.Id <= 0)
                 BadRequest();
 
-            var existingStudent = CollegeRepository.Students.Where(s => s.Id == model.Id).FirstOrDefault();
+            var existingStudent = _dbContext.Students.Where(s => s.Id == model.Id).FirstOrDefault();
 
             if (existingStudent == null)
                 return NotFound();
@@ -204,6 +216,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             existingStudent.StudentName = model.StudentName;
             existingStudent.Email = model.Email;
             existingStudent.Address = model.Address;
+            _dbContext.SaveChanges();
 
             return NoContent();
         }
@@ -221,7 +234,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             if (patchDocument == null || id <= 0)
                 BadRequest();
 
-            var existingStudent = CollegeRepository.Students.Where(s => s.Id == id).FirstOrDefault();
+            var existingStudent = _dbContext.Students.Where(s => s.Id == id).FirstOrDefault();
 
             if (existingStudent == null)
                 return NotFound();
@@ -242,6 +255,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             existingStudent.StudentName = studentDTO.StudentName;
             existingStudent.Email = studentDTO.Email;
             existingStudent.Address = studentDTO.Address;
+            _dbContext.SaveChanges();
 
             return NoContent();
         }
@@ -259,7 +273,7 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
                 return BadRequest();
 
             // variable um student auszuwählen
-            var student = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
+            var student = _dbContext.Students.Where(n => n.Id == id).FirstOrDefault();
 
             // abfang falsche !nicht vorhandener! id
             // added StatusCode: 404 Not Found Client Error
@@ -270,7 +284,9 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             // return type geändert
             return Ok(student);
             // added remove
-            CollegeRepository.Students.Remove(student);
+            _dbContext.Students.Remove(student);
+            _dbContext.SaveChanges();
+
             return true;
         }
     }
