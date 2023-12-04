@@ -39,6 +39,15 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Data
                 DOB = new DateTime(2022, 6, 12)
             }
            });
+
+            // added schema: max chars for data immigration
+            modelBuilder.Entity<Student>(entity =>
+            {
+                entity.Property(n => n.StudentName).IsRequired();
+                entity.Property(n => n.StudentName).HasMaxLength(250);
+                entity.Property(n => n.StudentName).IsRequired(false).HasMaxLength(500);
+                entity.Property(n => n.StudentName).IsRequired(true).HasMaxLength(250);
+            });
         }
     }
 }
