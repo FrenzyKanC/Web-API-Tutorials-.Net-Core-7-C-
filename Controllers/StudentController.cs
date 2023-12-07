@@ -1,6 +1,12 @@
 ﻿// fixed errors die durch das löschen der models (in-memory repositories) entstanden sind
 // removed in memory repositories with framework _dbContext
 
+// how create in ef
+// 1. create obj for entitiy class
+// 2. add obj to table
+// 3. save changes
+
+
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -63,13 +69,21 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             _logger.LogInformation("GetStudents method started");
             // added DTO
             // added linq query syntax for non boolean http calls, statt foreach beispiel
+
+            // return all records from db in Student Table:
+            // var students = _dbContext.Students.ToList();
+
+            // alternative: gibt nur diese werte wieder
+            // DTOs geben dem programm "custom business logic" on top of the db
             var students = _dbContext.Students.Select(s => new StudentDTO()
             {
                 Id = s.Id,
                 StudentName = s.StudentName,
                 Address = s.Address,
-                Email = s.Email
-            });
+                Email = s.Email,
+                DOB = s.DOB,
+               // DOB = s.DOB.ToString(),
+            }).ToList();
 
             // Datensätze in CollegeRepository gecuttet
             // return auf "CollegeRepository" geändert
@@ -109,12 +123,13 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
                 return NotFound($"Student with id {id} not found!");
             }
 
-            var studentDTO = new StudentDTO()
+            var studentDTO = new StudentDTO
             {
                 Id = student.Id,
                 StudentName = student.StudentName,
                 Address = student.Address,
-                Email = student.Email
+                Email = student.Email,
+                DOB = student.DOB
             };
             // return type geändert
             return Ok(studentDTO);
@@ -142,7 +157,8 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
                 Id = student.Id,
                 StudentName = student.StudentName,
                 Address = student.Address,
-                Email = student.Email
+                Email = student.Email,
+                DOB = student.DOB
             };
             return Ok(studentDTO);
         }
@@ -179,10 +195,11 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             int newId = _dbContext.Students.LastOrDefault().Id + 1;
             Student student = new Student
             {
-                // id entfernt
+                // id entfernt, da der wert über die DB kommt
                 StudentName = model.StudentName,
                 Address = model.Address,
-                Email = model.Email
+                Email = model.Email,
+                DOB = model.DOB
             };
             _dbContext.Students.Add(student);
             // save changes für externe db
@@ -208,14 +225,18 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             if(model == null || model.Id <= 0)
                 BadRequest();
 
+            // um daten aus dem entity framework upzudaten, müssen sie erst gefetcht werden:
             var existingStudent = _dbContext.Students.Where(s => s.Id == model.Id).FirstOrDefault();
 
             if (existingStudent == null)
                 return NotFound();
 
+            // danach update
             existingStudent.StudentName = model.StudentName;
             existingStudent.Email = model.Email;
             existingStudent.Address = model.Address;
+            existingStudent.DOB = Convert.ToDateTime(model.DOB);
+            // danach save
             _dbContext.SaveChanges();
 
             return NoContent();

@@ -27,6 +27,6 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Models
 
         // added custom DateCheck
         [DateCheck]
-        public DateTime AdmissionDate { get; set; }
+        public DateTime DOB { get; set; }
     }
 }
