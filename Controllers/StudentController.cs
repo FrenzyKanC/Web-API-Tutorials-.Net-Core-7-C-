@@ -225,17 +225,30 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             if(model == null || model.Id <= 0)
                 BadRequest();
 
-            // um daten aus dem entity framework upzudaten, müssen sie erst gefetcht werden:
-            var existingStudent = _dbContext.Students.Where(s => s.Id == model.Id).FirstOrDefault();
+            // um daten aus dem entity framework upzudaten, müssen sie erst gefetcht werden
+            // AsNoTracking um id diskrepanzen zu vermeiden
+            var existingStudent = _dbContext.Students.AsNoTracking().Where(s => s.Id == model.Id).FirstOrDefault();
 
             if (existingStudent == null)
                 return NotFound();
 
+            // new record, update in die db
+            var newRecord = new Student()
+            {
+                Id = existingStudent.Id,
+                StudentName = model.StudentName,
+                Address = model.Address,
+                Email = model.Email,
+                DOB = model.DOB
+            };
+            _dbContext.Students.Update(newRecord);
+
             // danach update
-            existingStudent.StudentName = model.StudentName;
+            // auskommentiert, da in memory
+            /* existingStudent.StudentName = model.StudentName;
             existingStudent.Email = model.Email;
             existingStudent.Address = model.Address;
-            existingStudent.DOB = Convert.ToDateTime(model.DOB);
+            existingStudent.DOB = Convert.ToDateTime(model.DOB); */
             // danach save
             _dbContext.SaveChanges();
 
