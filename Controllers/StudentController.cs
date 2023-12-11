@@ -63,7 +63,9 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
         // fill in namespace for Students
         // added ActionResult
         // obj auf StudentDTO geändert
-        public ActionResult<IEnumerable<StudentDTO>> GetStudents()
+
+        // added Async method -> await
+        public async Task<ActionResult<IEnumerable<StudentDTO>>> GetStudents()
         {
             // added logger
             _logger.LogInformation("GetStudents method started");
@@ -71,19 +73,19 @@ namespace Web_API_Tutorials_.Net_Core_7_C_.Controllers
             // added linq query syntax for non boolean http calls, statt foreach beispiel
 
             // return all records from db in Student Table:
-            // var students = _dbContext.Students.ToList();
+            // var students = await _dbContext.Students.ToListAsync();
 
             // alternative: gibt nur diese werte wieder
             // DTOs geben dem programm "custom business logic" on top of the db
-            var students = _dbContext.Students.Select(s => new StudentDTO()
+            
+            var students = await _dbContext.Students.Select(s => new StudentDTO()
             {
                 Id = s.Id,
                 StudentName = s.StudentName,
                 Address = s.Address,
                 Email = s.Email,
                 DOB = s.DOB,
-               // DOB = s.DOB.ToString(),
-            }).ToList();
+            }).ToListAsync();
 
             // Datensätze in CollegeRepository gecuttet
             // return auf "CollegeRepository" geändert
